@@ -3,13 +3,14 @@ import 'package:first_project/pages/comments.dart';
 import 'package:first_project/pages/home.dart';
 import 'package:first_project/pages/login.dart';
 import 'package:first_project/pages/post.dart';
+import 'package:first_project/pages/test2.dart';
 import 'package:flutter/material.dart';
 import './pages/home.dart';
 import './pages/categories.dart';
 import '/compenent/macprolist.dart';
 import '/pages/macpro.dart';
 import '/pages/macprodetails.dart';
-import '/pages/test.dart';
+import '/pages/test2.dart';
 import 'pages/home.dart';
 import 'pages/choosecountry.dart';
 
@@ -24,7 +25,7 @@ class MyApp extends StatelessWidget {
         title: 'mobitech',
         theme: ThemeData(fontFamily: 'Raleway'),
         //theme: ThemeData(fontFamily: 'Noto Sans JP'),
-        home: ChooseCountry(),
+        home: Login(),
         routes: {
           'categories': (context) {
             return Categories();

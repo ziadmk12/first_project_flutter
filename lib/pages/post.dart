@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'comments.dart';
 import 'package:http/http.dart' as http;
+import 'package:image_picker/image_picker.dart';
+
 import 'dart:convert' as convert;
+import 'dart:io';
 
 class Post extends StatefulWidget {
   @override
@@ -12,9 +15,17 @@ class Post extends StatefulWidget {
 class _PostState extends State<Post> {
   var id = '';
   var username = 'none';
+  File file;
   var email;
 
   TextEditingController addpost = new TextEditingController();
+
+  Future pickercamera() async {
+    final myFile = await ImagePicker().getImage(source: ImageSource.camera);
+    setState(() {
+      file = File(myFile.path);
+    });
+  }
 
   Future getPost() async {
     var url = Uri.parse('http://10.0.2.2:80/flutter_php/post.php');
@@ -24,8 +35,16 @@ class _PostState extends State<Post> {
   }
 
   Future addPost() async {
+    if (file == null) return;
+    String base64 = convert.base64Encode(file.readAsBytesSync());
+    String imagename = file.path.split('/').last;
     var url = Uri.parse('http://10.0.2.2:80/flutter_php/add_post.php');
-    var data = {'post': addpost.text, 'post_user': id};
+    var data = {
+      'post': addpost.text,
+      'post_user': id,
+      'imagename': imagename,
+      'image64': base64
+    };
     var response = await http.post(url, body: data);
     Navigator.of(context).pushNamed('post');
   }
@@ -84,6 +103,9 @@ class _PostState extends State<Post> {
                               borderSide: BorderSide(color: Colors.grey))),
                     ),
                   ),
+                  IconButton(
+                      icon: Icon(Icons.camera_enhance),
+                      onPressed: pickercamera),
                   Row(
                     children: [
                       Expanded(
@@ -131,6 +153,7 @@ class _PostState extends State<Post> {
                             username: snapshot.data[i]['username'],
                             postcontent: snapshot.data[i]['post'],
                             post_id: snapshot.data[i]['post_id'],
+                            post_image: snapshot.data[i]['post_image'],
                           )
                       ],
                     );
@@ -148,7 +171,8 @@ class postList extends StatelessWidget {
   final username;
   final postcontent;
   final post_id;
-  postList({this.username, this.postcontent, this.post_id});
+  final post_image;
+  postList({this.username, this.postcontent, this.post_id, this.post_image});
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -164,8 +188,19 @@ class postList extends StatelessWidget {
                       color: Colors.blue, fontWeight: FontWeight.w800)),
             ),
             trailing: Icon(Icons.filter_list_alt),
-            subtitle: Container(
-                margin: EdgeInsets.only(top: 5), child: Text(postcontent)),
+            subtitle: Column(
+              children: [
+                Container(
+                  margin: EdgeInsets.only(top: 5),
+                  child: Text(postcontent),
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                Image.network(
+                    'http://10.0.2.2:80/flutter_php/upload/$post_image')
+              ],
+            ),
           ),
           Divider(
             color: Colors.grey.withOpacity(0.5),
