@@ -146,17 +146,29 @@ class _PostState extends State<Post> {
                 future: getPost(),
                 builder: (BuildContext context, AsyncSnapshot snapshot) {
                   if (snapshot.hasData) {
-                    return Column(
-                      children: [
-                        for (int i = snapshot.data.length - 1; i >= 0; i--)
-                          postList(
+                    // return Column(
+                    //   children: [
+                    //     for (int i = snapshot.data.length - 1; i >= 0; i--)
+                    //       postList(
+                    //         username: snapshot.data[i]['username'],
+                    //         postcontent: snapshot.data[i]['post'],
+                    //         post_id: snapshot.data[i]['post_id'],
+                    //         post_image: snapshot.data[i]['post_image'],
+                    //       )
+                    //   ],
+                    // );
+                    return ListView.builder(
+                        shrinkWrap: true,
+                        physics: NeverScrollableScrollPhysics(),
+                        itemCount: snapshot.data.length,
+                        itemBuilder: (BuildContext context, int i) {
+                          return postList(
                             username: snapshot.data[i]['username'],
                             postcontent: snapshot.data[i]['post'],
                             post_id: snapshot.data[i]['post_id'],
                             post_image: snapshot.data[i]['post_image'],
-                          )
-                      ],
-                    );
+                          );
+                        });
                   }
                   return Center(
                     child: CircularProgressIndicator(),

@@ -1,8 +1,11 @@
+import 'package:first_project/compenent/validinput.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert' as convert;
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../compenent/alert.dart';
 
 class Login extends StatefulWidget {
   @override
@@ -16,38 +19,6 @@ class _LoginState extends State<Login> {
   TextEditingController confirmpassword = new TextEditingController();
   GlobalKey<FormState> formstatesignup = new GlobalKey<FormState>();
   GlobalKey<FormState> formstatesignin = new GlobalKey<FormState>();
-  Pattern pattern =
-      r"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?)*$";
-  showdialog(context) {
-    return showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            content: Row(
-              children: [Text('Loading '), CircularProgressIndicator()],
-            ),
-          );
-        });
-  }
-
-  showdialogAll(context, String mytitle, String mycontent) {
-    return showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            content: Text(mycontent),
-            title: Text(mytitle),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child: Text('done'),
-              ),
-            ],
-          );
-        });
-  }
 
   savePref(String id, String username, String email) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -74,7 +45,7 @@ class _LoginState extends State<Login> {
             responsebody['email']);
         Navigator.of(context).pushNamed('home');
       } else {
-        showdialogAll(context, 'Faild', 'email or password incorrect');
+        showDialogAll(context, 'Faild', 'email or password incorrect');
       }
     } else {
       print('no valid');
@@ -97,63 +68,10 @@ class _LoginState extends State<Login> {
         print('succes');
         Navigator.of(context).pushNamed('home');
       } else {
-        showdialogAll(context, 'Faild', 'this email is used before');
+        showDialogAll(context, 'Faild', 'this email is used before');
       }
     } else {
       print('no valid');
-    }
-  }
-
-  String validGlobal(String val) {
-    if (val.trim().isEmpty) {
-      return 'faild is empty';
-    }
-  }
-
-  String validUsername(String val) {
-    if (val.trim().isEmpty) {
-      return 'username should not be impty';
-    }
-    if (val.trim().length < 4) {
-      return 'username should not be less than 4 lettre';
-    }
-    if (val.trim().length > 10) {
-      return 'username should not be larger than 10 lettre';
-    }
-  }
-
-  String validPassword(String val) {
-    if (val.trim().isEmpty) {
-      return 'password should not be impty';
-    }
-    if (val.trim().length < 4) {
-      return 'password should not be less than 4 lettre';
-    }
-    if (val.trim().length > 10) {
-      return 'password should not be larger than 10 lettre';
-    }
-  }
-
-  String validConfirmPassword(String val) {
-    if (val != password.text) {
-      return 'password incorect';
-    }
-  }
-
-  String validEmail(String val) {
-    if (val.trim().isEmpty) {
-      return 'email should not be impty';
-    }
-    if (val.trim().length < 4) {
-      return 'email should not be less than 4 lettre';
-    }
-    if (val.trim().length > 20) {
-      return 'email should not be larger than 20 lettre';
-    }
-
-    RegExp regExp = new RegExp(pattern);
-    if (!regExp.hasMatch(val)) {
-      return 'email form not match (exemple@gmail.com)';
     }
   }
 
@@ -369,7 +287,7 @@ class _LoginState extends State<Login> {
                   SizedBox(
                     height: 15,
                   ),
-                  textFieldForm(false, 'enter your email', email, validEmail),
+                  textFieldForm(false, 'enter your email', email, 'email'),
 
                   SizedBox(
                     height: 15,
@@ -383,7 +301,7 @@ class _LoginState extends State<Login> {
                     height: 15,
                   ),
                   textFieldForm(
-                      true, 'enter your password', password, validPassword)
+                      true, 'enter your password', password, 'password')
                 ],
                 //end textfield username
               ),
@@ -431,7 +349,7 @@ class _LoginState extends State<Login> {
                     height: 15,
                   ),
                   textFieldForm(
-                      false, 'enter your username', username, validUsername),
+                      false, 'enter your username', username, 'username'),
                   SizedBox(
                     height: 15,
                   ),
@@ -445,7 +363,7 @@ class _LoginState extends State<Login> {
                   SizedBox(
                     height: 15,
                   ),
-                  textFieldForm(false, 'enter your email', email, validEmail),
+                  textFieldForm(false, 'enter your email', email, 'email'),
                   SizedBox(
                     height: 15,
                   ),
@@ -458,7 +376,7 @@ class _LoginState extends State<Login> {
                     height: 15,
                   ),
                   textFieldForm(
-                      true, 'enter new password', password, validPassword),
+                      true, 'enter new password', password, 'password'),
                   SizedBox(
                     height: 15,
                   ),
@@ -471,7 +389,7 @@ class _LoginState extends State<Login> {
                     height: 15,
                   ),
                   textFieldForm(true, 'Re-peat your password again',
-                      confirmpassword, validConfirmPassword),
+                      confirmpassword, 'confirmpass'),
                 ],
                 //end textfield username
               ),
@@ -482,11 +400,24 @@ class _LoginState extends State<Login> {
     );
   }
 
-  TextFormField textFieldForm(bool pass, String myHintText,
-      TextEditingController myController, myValid) {
+  TextFormField textFieldForm(
+      bool pass, String myHintText, TextEditingController myController, type) {
     return TextFormField(
       obscureText: pass,
-      validator: myValid,
+      validator: (val) {
+        if (type == "username") {
+          return validinput(val, 10, 4, "username");
+        }
+        if (type == "email") {
+          return validEmail(val, 20, 4, "email");
+        }
+        if (type == "password") {
+          return validinput(val, 10, 4, "password");
+        }
+        if (type == "confirmpass") {
+          return confirmPassword(val, 10, 4, "confirmpass", password.text);
+        }
+      },
       controller: myController,
       decoration: InputDecoration(
           contentPadding: EdgeInsets.all(4),
