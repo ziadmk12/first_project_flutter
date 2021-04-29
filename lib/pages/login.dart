@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert' as convert;
 import 'package:shared_preferences/shared_preferences.dart';
-
+import 'package:firebase_messaging/firebase_messaging.dart';
 import '../compenent/alert.dart';
 
 class Login extends StatefulWidget {
@@ -13,6 +13,9 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
+  var myToken;
+  //FirebaseMessaging firebaseMessaging = FirebaseMessaging.instance;
+
   TextEditingController username = new TextEditingController();
   TextEditingController email = new TextEditingController();
   TextEditingController password = new TextEditingController();
@@ -87,6 +90,17 @@ class _LoginState extends State<Login> {
           print(showsignin);
         });
       };
+
+    // firebaseMessaging.getToken().then((String token) {
+    //   assert(token != null);
+    //   {
+    //     setState(() {
+    //       myToken = token;
+    //     });
+    //     print(myToken);
+    //   }
+    // });
+
     super.initState();
   }
 

@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "881509489540",
+    "project_id": "mobitech-3c6ec",
+    "storage_bucket": "mobitech-3c6ec.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:881509489540:android:4480ccc676f98db9651bd1",
+        "android_client_info": {
+          "package_name": "com.example.first_project"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "881509489540-347j1vv6a25m05ggb0th6vgpe6ldhoug.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDyYlVNc0IAAizcokDGDjmTfQ8HyKxfMJI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "881509489540-347j1vv6a25m05ggb0th6vgpe6ldhoug.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
